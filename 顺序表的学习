@@ -1,0 +1,82 @@
+#include<iostream>
+#include<stdlib.h>
+using namespace std;
+
+#define MAXSIZE 100
+#define Error 0
+#define Ok 1
+typedef int ElemType;
+typedef int Status;
+
+typedef struct{
+    ElemType *elem;
+    int length;
+}SqList;
+
+Status initList(SqList &L){
+    L.elem = new ElemType[MAXSIZE];
+    if (!L.elem) return Error;
+    L.length=0;
+    return Ok;
+}
+// 顺序表的查找
+int LocateElem(SqList L, ElemType e){
+    for(int i=0;i<L.length;i++){
+        if(L.elem[i] == e)
+            return i+1;
+    }
+    return 0;
+}
+// 顺序表的插入
+Status ListInsert(SqList &L, int i, ElemType e){
+    if(i<1|| i>L.length+1) return Error;
+    if(L.length==MAXSIZE) return Error;
+    for(int j=L.length-1; j>=1;j--){
+        L.elem[j+1] = L.elem[j];
+    }
+    L.elem[i-1] = e;
+    L.length++;
+    return Ok;
+}
+Status ListInsert(SqList &L, int i){
+    if(i<1||i>L.length) return Error;
+    for(int j=i-1;j<L.length;j++){
+        L.elem[j] = L.elem[j+1];
+    }
+    L.length--;
+    return Ok;
+}
+
+//顺序表输出
+void printList(SqList L){
+    for(int i=0; i<L.length;i++){
+        cout<<L.elem[i]<<" ";
+    }
+    cout<<endl;
+}
+// 顺序表输入
+Status inListValue(SqList &L, int n){
+    if(n<0||n>MAXSIZE)return Error;
+    if(L.length==MAXSIZE) return Error;
+    for(int i=0; i<n;i++){
+        L.elem[i] = rand();
+        L.length++;
+    }
+    return Ok;
+}
+int main(){
+    int e, n, x, y;
+    cout<<"正在初始化顺序表"<<endl;
+    SqList L;
+    initList(L);
+    cout<<"--顺序表初始化成功"<<endl;
+    cout<<"顺序表随机赋值多少个元素："<<endl;
+    cin>>n;
+    inListValue(L, n);
+    cout<<"完成"<<endl;
+    printList(L);
+
+
+    system("pause");
+    return 0;
+}
