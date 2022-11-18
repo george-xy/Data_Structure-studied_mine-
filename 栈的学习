@@ -1,0 +1,73 @@
+# include <iostream>
+using namespace std;
+#define MaxSize 100
+
+typedef struct SqStack{ //动态分配
+    int *base;
+    int *top;
+}SqStack;
+
+ /*
+ typeder struct SqStack{  静态分配
+    int data[MaxSize];
+    int top;  栈顶下标
+ }SqStack;
+ */
+
+bool InitSqStack(SqStack &S){ //构造一个空栈S
+    S.base = new int[MaxSize];
+    if(!S.base){
+        return -1;
+    }
+    S.top = S.base;
+    return true;
+}
+
+bool Push(SqStack &S, int e){  //入栈
+    if (S.top-S.base == MaxSize){
+        return false;
+    }
+    *S.top = e;
+    S.top++;
+    return true;
+}
+
+bool Pop(SqStack &S, int &e){
+    if (S.top == S.base){
+        return false;
+    }
+    e = *S.top;
+    S.top--;
+    return true;
+}
+
+int GetTop(SqStack S){
+    if (S.top != S.base){
+        return *(S.top-1);
+    }
+    else
+        return -1;
+}
+
+int main(){
+    int n, x;
+    SqStack S;
+    InitSqStack(S); //初始化一个顺序栈
+    cout<<"请输入元素个数n: "<<endl;
+    cin>>n;
+    cout<<"请依次输入n个元素"<<endl;
+    while(n--){
+        cin>>x;
+        Push(S, x);
+    }
+    cout<<"元素依次出栈"<<endl;
+    while(S.top!=S.base){
+        cout<<GetTop(S)<<"\t"; //依次输出栈顶元素
+        Pop(S, x);
+    }
+    system("pause");
+    return 0;
+
+}
+
+
