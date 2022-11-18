@@ -1,0 +1,85 @@
+# include<iostream>
+using namespace std;
+# define MaxSize 100
+
+// 循环队列的元素个数(Q.rear-Q.front+MaxSize)%MaxSize  防止出现负数(+MaxSize),正数(%MaxSize  )
+
+typedef struct SqQueue  // 顺序队列(动态分配)
+{
+    int *base;  //空间基地址
+    int front, rear; //队头， 队尾
+
+}SqQueue;
+
+/*
+typedef struct SqQueue  // 顺序队列(静态分配)
+{
+    int data[MaxSize];  //空间基地址
+    int front, rear; //队头， 队尾
+
+}SqQueue;
+*/
+bool InitQueue(SqQueue &Q){ //循环队列的初始化
+    Q.base = new int[MaxSize];  //分配空间
+    if(!Q.base) return false;
+    Q.front = Q.rear = 0;
+    return true;
+}
+
+bool EnQueue(SqQueue &Q, int e){ //循环队列的入队
+    if ((Q.rear+1)%MaxSize==Q.front){ //判断是否队满
+        return false;
+    }
+    Q.base[Q.rear] = e;
+    Q.rear=(Q.rear+1)%MaxSize;
+    return true;
+
+}
+
+bool DeQueue(SqQueue &Q, int &e){ //循环队列的出队
+    if(Q.rear==Q.front){ //判断是否队空
+        return false;
+    }
+    e = Q.base[Q.front]; //保存队头元素， 如果需要的话
+    Q.front = (Q.front+1)%MaxSize;
+    return true;
+
+}
+
+int QueueLength(SqQueue Q){//循环队列的长度
+    return (Q.rear-Q.front+MaxSize)%MaxSize;
+}
+
+int GetHead(SqQueue Q){ //取队头元素
+    if (!Q.rear==Q.front){
+        return Q.base[Q.front];
+    }
+    return -1;
+}
+
+int main(){
+    SqQueue Q;
+    int n, x;
+    InitQueue(Q);
+    cout<<"请输入元素个数n: "<<endl;
+    cin>>n;
+    cout<<"请依次输入n个整型数"<<endl;
+    while(n--){
+        cin>>x;
+        EnQueue(Q, x);//入队
+    }
+    cout<<endl;
+    cout<<"队列内的元素个数"<<QueueLength(Q)<<endl;
+    cout<<"队头元素"<<GetHead(Q)<<endl;
+    cout<<"元素依次出队"<<endl;
+    while(true){
+        if(DeQueue(Q, x))
+        cout<<x<<"\t";
+        else 
+            break;
+    }
+    cout<<endl;
+    cout<<"队列内的元素个数"<<QueueLength(Q)<<endl;
+    system("pause");
+    return 0;
+}
