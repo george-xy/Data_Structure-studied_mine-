@@ -1,0 +1,122 @@
+#include <iostream>
+using namespace std;
+const int MAXVNUM = 1000;
+bool visted[MAXVNUM];//判断是否访问
+
+typedef char VexType;
+typedef struct AdjNode{ //定义邻接点类型
+    int v;//邻接点下标
+    struct AdjNode *next;
+}AdjNode;
+typedef struct VexNode{ //定义顶点类型
+    VexType data;
+    AdjNode *first;
+}VexNode;
+typedef struct{ //定义邻接表的类型
+    VexNode Vex[MAXVNUM];
+    int vexnum, edgenum;
+}ALGraph;
+
+int locatevex(ALGraph G, VexType x){  //找顶点下标
+    for (int i=0; i<G.vexnum;i++){
+        if (x == G.Vex[i].data){
+            return i;
+        }
+    }
+    return -1;
+}
+
+void insertedge(ALGraph &G, int i, int j){ //插入一条边
+    AdjNode *s;
+    s = new AdjNode;
+    s->v = j;
+    s->next = G.Vex[i].first;
+    G.Vex[i].first = s;
+
+}
+
+void printAL(ALGraph G){//输出邻接表
+    cout<<"输出邻接表"<<endl;
+    for (int i=0;i<G.vexnum;i++){
+        AdjNode *t = G.Vex[i].first;
+        cout<<G.Vex[i].data<<endl;
+        while(t!=NULL){
+            cout<<"["<<t->v<<"]"<<endl;
+            t = t->next;
+        }
+    }
+
+}
+void CreateALGraph(ALGraph &G){//创建邻接表
+    int i, j;
+    VexType u,v;
+    cout<<"输入顶点数和边数"<<endl;
+    cin>>G.vexnum>>G.edgenum;
+    cout<<"输入顶点信息"<<endl;
+    for (int i=0;i<G.vexnum;i++){
+        cin>>G.Vex[i].data;
+    }
+    for (int i=0;i<G.vexnum;i++){
+        G.Vex[i].first = NULL;
+    }
+    cout<<"请依次输入每条边的两个顶点u和v"<<endl;
+    while(G.edgenum--){
+        cin>>u>>v;
+        i = locatevex(G, u);
+        j = locatevex(G, v);
+        if (i!=-1&&j!=-1){
+            insertedge(G, i, j);
+        }
+        else{
+            cout<<"输入有误, 请重新输入"<<endl;
+            G.edgenum++;
+        }
+
+    }
+
+}
+
+void DFS_AL(ALGraph G, int v){
+    int w;
+    AdjNode *p;
+    cout<<G.Vex[v].data<<"\t";
+    visted[v] = true;
+    p = G.Vex[v].first;
+    while (p) //检查v的所有邻接点
+    {
+        w = p->v; //w为p的邻接点
+        if(!visted[w]){ //w未被访问
+            DFS_AL(G, w); //递归访问w的邻接点
+        }
+        p = p->next;
+    }
+
+}
+void DFS_AL(ALGraph G){ //如果是非连通图，查漏
+    for(int i=0; i<G.vexnum;i++){
+        if(!visted[i]){
+            DFS_AL(G, i);
+        }
+    }
+}
+
+int main(){
+    ALGraph G;
+    int v;
+    VexType c;
+    CreateALGraph(G);
+    printAL(G);
+    cout<<"请输入遍历连通图的起始点"<<endl;
+    cin>>c;
+    v = locatevex(G, c);
+    if(v!=-1){
+        cout<<"深度优先遍历结果"<<endl;
+        DFS_AL(G,v);
+        DFS_AL(G);
+    }
+    else{
+        cout << "输入顶点信息错！请重新输入！"<<endl;
+    }
+
+    return 0;
+}
