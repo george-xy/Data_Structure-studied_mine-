@@ -1,0 +1,90 @@
+#include<iostream>
+#include <queue>//引入队列头文件
+using namespace std;
+
+typedef struct Bnode{ //定义二叉树的存储结构
+    char data;
+    struct Bnode *lchild, *rchild;
+
+}Bnode, *Btree;
+
+void Createtree(Btree &T){ //创建二叉树函数
+    //按先序次序输入二叉树中结点的值（字符）, 创建二叉链表示的二叉树
+    char ch;
+    cin>>ch;
+    if(ch=='#')
+        T=NULL;   //递归结束建空树
+    else{
+        T = new Bnode;
+        T->data = ch;
+        Createtree(T->lchild);
+        Createtree(T->rchild);
+    }
+
+}
+
+void preorder(Btree T){ //先序遍历  
+    if(T){
+        cout<<T->data<<" ";
+        preorder(T->lchild);
+        preorder(T->rchild);
+    }
+
+}
+
+void inorder(Btree T){ //中序遍历
+    if(T){
+        inorder(T->lchild);
+        cout<<T->data<<" ";
+        inorder(T->rchild);
+    }
+
+}
+
+void posorder(Btree T){//后序遍历
+    if(T){
+        posorder(T->lchild);
+        posorder(T->rchild);
+        cout<<T->data<<" ";
+    }
+
+}
+
+bool Leveltraverse(Btree T){ //层次遍历
+    Btree p;
+    if(!T)
+        return false;
+    queue<Btree>Q; //创建一个普通队列，里面存放指针类型
+    Q.push(T); //根据指针入队
+    while(!Q.empty()){ //如果队列不为空
+        p = Q.front(); //取出队头元素作为当前扩展结点livenode
+        Q.pop();
+        cout<<p->data<<" ";
+        if(p->lchild)
+            Q.push(p->lchild); //左孩子指针入队
+        if(p->rchild)
+            Q.push(p->rchild);
+
+    }
+    return true;
+
+}
+
+int main(){
+    Btree mytree;
+    cout<<"按先序次序输入二叉树中结点的值，孩子空时输入#"<<endl;
+    Createtree(mytree); //创建二叉树
+    cout<<endl;
+    cout<<"先序遍历结果"<<endl;
+    preorder(mytree);
+    cout<<endl;
+    cout<<"中序遍历结果"<<endl;
+    inorder(mytree);
+    cout<<endl;
+    cout<<"后序遍历结果"<<endl;
+    posorder(mytree);
+    cout<<endl;
+    cout<<"层序遍历"<<endl;
+    Leveltraverse(mytree);
+    return 0;
+}
