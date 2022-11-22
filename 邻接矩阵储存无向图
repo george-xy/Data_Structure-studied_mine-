@@ -1,0 +1,71 @@
+#include<iostream>  //邻接矩阵存储无向图
+using namespace std;
+
+#define MAXVNUM 100
+typedef char VexType;
+typedef int EdgeType;
+
+typedef struct 
+{
+    VexType Vex[MAXVNUM];  //顶点的数组
+    EdgeType Edge[MAXVNUM][MAXVNUM]; //邻接矩阵
+    int vexnum,edgenum;
+}AMGraph;
+
+// 找边关联两点的下标
+int locatevex(AMGraph G, VexType x){
+    for (int i=0;i<G.vexnum;i++){
+        if (x == G.Vex[i])
+            return i;
+    }
+    return -1;
+}
+
+// 存储邻接矩阵
+void CreateAMGraph(AMGraph &G){
+    int i, j;
+    VexType u,v;
+    cout<<"请输入顶点数"<<endl;
+    cin>>G.vexnum;
+    cout<<"请输入边数"<<endl;
+    cin>>G.edgenum;
+    for (int i=0;i<G.vexnum;i++){
+        cin>>G.Vex[i];
+    }
+
+    for(int i=0; i<G.vexnum;i++){
+        for (int j=0; j<G.vexnum;j++){
+            G.Edge[i][j] = 0;
+        }
+    }
+    cout<<"请输入每条边依附的两个顶点"<<endl;
+    while(G.edgenum--){
+        cin>>u>>v;
+        i = locatevex(G, u);
+        j = locatevex(G, v);
+        if (i!=-1&&j!=-1){
+            G.Edge[i][j] = G.Edge[j][i] = 1;
+        }
+        else{
+            cout<<"输入错误，重新输入"<<endl;
+            G.edgenum++;
+        }
+    }
+}
+
+//输出邻接矩阵
+void printAM(AMGraph G){
+    for (int i =0;i<G.vexnum;i++){
+        for (int j = 0; j<G.vexnum; j++){
+            cout<<G.Edge[i][j]<<'\t';
+        }
+        cout<<endl;
+    }
+}
+
+int main(){
+    AMGraph G;
+    CreateAMGraph(G);
+    printAM(G);
+    return 0;
+}
